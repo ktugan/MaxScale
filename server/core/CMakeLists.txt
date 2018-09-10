@@ -68,6 +68,7 @@ target_link_libraries(maxscale-common
   gnutls
   gcrypt
   ${MICROHTTPD_LIBRARIES}
+  ldap
 )
 
 if(WITH_ASAN AND ASAN_FOUND)
