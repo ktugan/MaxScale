@@ -40,6 +40,8 @@ int main(int argc, char** argv)
     if (test.ok())
     {
         const char wrong_server[] = "Query went to wrong server.";
+        cout << "Testing with all servers on. Select-queries should go to servers " << server_ids[1]
+             << " and " << server_ids[2] << ".\n";
         IdSet allowed = {server_ids[1], server_ids[2]};
         // With all servers on, the query should go to either 2 or 3. Test several times.
         for (int i = 0; i < 5 && test.ok(); i++)
@@ -52,6 +54,8 @@ int main(int argc, char** argv)
             int stopped_node = 1; // Stop server2
             test.repl->stop_node(stopped_node);
             test.maxscales->wait_for_monitor(1);
+            cout << "Stopped server " << server_ids[1] << ". Select-queries should go to server " << server_ids[2]
+                 << " only.\n";   
             allowed = {server_ids[2]};
             // Query should go to 3 only. Test several times.
             for (int i = 0; i < 5 && test.ok(); i++)
@@ -80,6 +84,7 @@ bool check_server_id(MYSQL* conn, IdSet& allowed_ids)
         int queried_id = atoi(str);
         if (allowed_ids.count(queried_id))
         {
+	    cout << "Query went to server " << queried_id << ".\n";
             id_ok = true;
         }
         else
