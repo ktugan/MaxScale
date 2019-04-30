@@ -56,13 +56,14 @@ int main(int argc, char** argv)
             int allowed_id = server_ids[allowed_node];
             cout << "Stopped server " << stopped_id << ".\n";
             cout << "Select-queries should go to server " << allowed_id << " only.\n";
-            IdSet allowed_set = {server_ids[2]};
+            IdSet allowed_set = {allowed_id};
             // Query should go to 3 only. Test several times.
             for (int i = 0; i < 5 && test.ok(); i++)
             {
-                test.expect(check_server_id(maxconn, allowed_set), wrong_server);
+                test.expect(check_server_id(maxconn, allowed_set), "%s", wrong_server);
             }
             test.repl->start_node(node_to_stop, "");
+	    cout << "Restarted server " << stopped_id << ".\n";
         };
 
         if (test.ok())
