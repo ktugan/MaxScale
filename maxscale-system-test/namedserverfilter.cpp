@@ -49,20 +49,29 @@ int main(int argc, char** argv)
             test.expect(check_server_id(maxconn, allowed), wrong_server);
         }
 
-        if (test.ok())
-        {
-            int stopped_node = 1; // Stop server2
-            test.repl->stop_node(stopped_node);
+        auto test_server_down = [&](int node_to_stop, int allowed_node) {
+            test.repl->stop_node(node_to_stop);
             test.maxscales->wait_for_monitor(1);
-            cout << "Stopped server " << server_ids[1] << ". Select-queries should go to server " << server_ids[2]
-                 << " only.\n";   
-            allowed = {server_ids[2]};
+            int stopped_id = server_ids[node_to_stop];
+            int allowed_id = server_ids[allowed_node];
+            cout << "Stopped server " << stopped_id << ".\n";
+            cout << "Select-queries should go to server " << allowed_id << " only.\n";
+            IdSet allowed_set = {server_ids[2]};
             // Query should go to 3 only. Test several times.
             for (int i = 0; i < 5 && test.ok(); i++)
             {
-                test.expect(check_server_id(maxconn, allowed), wrong_server);
+                test.expect(check_server_id(maxconn, allowed_set), wrong_server);
             }
-            test.repl->start_node(stopped_node, "");
+            test.repl->start_node(node_to_stop, "");
+        };
+
+        if (test.ok())
+        {
+            test_server_down(1, 2);
+        }
+        if (test.ok())
+        {
+            test_server_down(2, 1);
         }
     }
     mysql_close(maxconn);
