@@ -105,6 +105,8 @@ else
         sudo sed -i 's/--selinux-enabled/--selinux-enabled=false/' /etc/sysconfig/docker
         sudo systemctl start docker
     fi
+
+    source /opt/rh/devtoolset-7/enable
   fi
 fi
 
