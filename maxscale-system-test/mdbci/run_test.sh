@@ -109,7 +109,7 @@ fi
 if [[ "$name" =~ '-gcov' ]]
 then
     ssh $sshopt 'cd /tmp/build && lcov --gcov-tool=$(command -v gcov) -c -d . -o lcov.info && genhtml -o /tmp/gcov-report/ lcov.info'
-    rsync -az --delete -e "ssh $scpopt" $sshuser@$IP:/tmp/gcov-report/ ./${logs_publish_dir}
+    rsync -az --delete -e "ssh $scpopt" $sshuser@$IP:/tmp/gcov-report/ ${logs_publish_dir}/coverage
 fi
 
 cp core.* ${logs_publish_dir}
