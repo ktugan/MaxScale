@@ -9,8 +9,8 @@ cd ./MaxScale
 
 mkdir _build
 cd _build
-cmake ..  $cmake_flags
-make || exit 1
+cmake -j 4 ..  $cmake_flags
+make -j 4 || exit 1
 
 if [[ "$cmake_flags" =~ "BUILD_TESTS=Y" ]]
 then
@@ -24,7 +24,7 @@ then
     if [ $? -eq 0 ]
     then
         export SKIP_SHUTDOWN=Y
-        make test_rest_api && make test_maxctrl
+        make -j 4 test_rest_api && make -j 4 test_maxctrl
         rc=$?
         #docker ps -aq|xargs docker rm -vf
 
@@ -41,7 +41,7 @@ sudo rm -rf /usr/bin/strip
 sudo touch /usr/bin/strip
 sudo chmod a+x /usr/bin/strip
 
-sudo make package
+sudo make -j 4 package
 res=$?
 if [ $res != 0 ] ; then
 	echo "Make package failed"
@@ -52,8 +52,8 @@ sudo rm ../CMakeCache.txt
 sudo rm CMakeCache.txt
 
 echo "Building tarball..."
-cmake .. $cmake_flags -DTARBALL=Y
-sudo make package
+cmake -j 4 .. $cmake_flags -DTARBALL=Y
+sudo make -j 4 package
 
 cd ..
 cp _build/*.rpm .
@@ -75,7 +75,7 @@ fi
 
 if [ "$BUILD_RABBITMQ" == "yes" ] ; then
   cmake ../rabbitmq_consumer/  $cmake_flags
-  sudo make package
+  sudo make -j 4 package
   res=$?
   if [ $res != 0 ] ; then
         exit $res
