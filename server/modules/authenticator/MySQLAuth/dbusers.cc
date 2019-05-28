@@ -976,7 +976,9 @@ bool query_and_process_users(const char* query, MYSQL* con, sqlite3* handle, SER
 {
     bool rval = false;
 
-    if (mxs_mysql_query(con, "USE mysql") == 0      // Set default database in case we use CTEs
+
+    if (mxs_mysql_query(con, "SET max_execution_time=0") == 0
+        && mxs_mysql_query(con, "USE mysql") == 0      // Set default database in case we use CTEs
         && mxs_mysql_query(con, query) == 0)
     {
         MYSQL_RES* result = mysql_store_result(con);
