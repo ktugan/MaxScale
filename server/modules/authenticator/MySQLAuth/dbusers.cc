@@ -46,9 +46,8 @@
 
 // Query used with 10.0 or older
 #define NEW_LOAD_DBUSERS_QUERY \
-    "SELECT \
-    max_execution_time=120000 \
-    u.user, u.host, d.db, u.select_priv, u.%s \
+    "SET SESSION max_execution_time=120000; \
+    SELECT u.user, u.host, d.db, u.select_priv, u.%s \
     FROM mysql.user AS u LEFT JOIN mysql.db AS d \
     ON (u.user = d.user AND u.host = d.host) WHERE u.plugin IN ('', 'mysql_native_password') %s \
     UNION \
